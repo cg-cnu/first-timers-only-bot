@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-import tweepy
-import requests
-import warnings
 import re
 import json
 import os
 from github import Github
+import warnings
 
 git_token = os.environ.get('GIT_TOKEN')
 
+import requests
+import tweepy
+
 ellipse = u'…'
 query_string = 'https://api.github.com/search/issues?q=label:{}+is:issue+is:open&sort=updated&order=desc'
-queries = [query_string.format('first-timers-only'),
-           query_string.format('low-hanging-fruit'),
-           query_string.format('up-for-grabs'),
-           query_string.format('beginners')]
+queries = [query_string.format('first-timers-only')]
+
 
 def humanize_url(api_url):
     """Make an API endpoint to an Human endpoint."""
@@ -31,7 +30,7 @@ def humanize_url(api_url):
 
 def get_first_timer_issues():
     """Fetches the first page of issues with the label first-timers-label which are still open."""
-    items=[]
+    items = []
     for query in queries:
         res = requests.get(query)
         if res.status_code == 403:
@@ -42,6 +41,7 @@ def get_first_timer_issues():
         else:
             raise RuntimeError('Could not handle response: ' + str(res) + ' from the API.')
     return items
+
 
 def get_fresh(old_issue_list, new_issue_list):
     """Returns which issues are not present in the old list of issues."""
